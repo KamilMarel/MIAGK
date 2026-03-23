@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="MIAGK/MIAGK.vcxproj" Id="d9410301-9864-49ff-9196-8e1214ee4d13" />
+</Solution>
