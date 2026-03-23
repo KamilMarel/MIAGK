@@ -4,9 +4,9 @@
 
 const unsigned int BUFFER_SIZE_X = 1024, BUFFER_SIZE_Y = 1024;
 
-const unsigned int BUFFER_CLEAR_COLOR_RED = 95,
-                   BUFFER_CLEAR_COLOR_GREEN = 191,
-                   BUFFER_CLEAR_COLOR_BLUE = 201;
+const unsigned char BUFFER_CLEAR_COLOR_RED = 95,
+                    BUFFER_CLEAR_COLOR_GREEN = 191,
+                    BUFFER_CLEAR_COLOR_BLUE = 201;
 
 int main()
 {
