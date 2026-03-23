@@ -1,5 +1,4 @@
 #include "Buffer.h"
-#include "stb_image_write.h"
 
 Buffer::Buffer()
 {

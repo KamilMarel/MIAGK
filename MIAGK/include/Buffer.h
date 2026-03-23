@@ -1,3 +1,5 @@
+#include "stb_image_write.h"
+
 class Buffer
 {
 public:
