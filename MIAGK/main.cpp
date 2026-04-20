@@ -15,7 +15,9 @@ int main()
     rasterizer.rasterizeTriangle(float3(-0.5f, 0.0f, 0.0f),
                                  float3(0.0f, 0.5f, 0.0f),
                                  float3(0.5f, 0.0f, 0.0f),
-                                 color(255, 255, 255));
+                                 color(255, 0, 0),
+                                 color(0, 255, 0),
+                                 color(0, 0, 255));
 
     buffer.saveToFile();
 }

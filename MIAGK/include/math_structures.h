@@ -89,6 +89,20 @@ struct color
 		this->b = b;
 	}
 
+	color operator*(const float other) const
+	{
+		return { static_cast<unsigned char>(r * other),
+				 static_cast<unsigned char>(g * other),
+				 static_cast<unsigned char>(b * other)};
+	}
+
+	color operator+(const color& other) const
+	{
+		return { static_cast<unsigned char>(r + other.r),
+				 static_cast<unsigned char>(g + other.g),
+				 static_cast<unsigned char>(b + other.b)};
+	}
+
 	friend std::ostream& operator<<(std::ostream& os, const color& obj)
 	{
 		os << "(" << obj.r << ", " << obj.g << ", " << obj.b << ")";

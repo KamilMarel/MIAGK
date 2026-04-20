@@ -9,7 +9,12 @@ Rasterizer::~Rasterizer()
 {
 }
 
-void Rasterizer::rasterizeTriangle(const float3& a, const float3& b, const float3& c, const color& fillColor)
+void Rasterizer::rasterizeTriangle(const float3& a, 
+								   const float3& b, 
+								   const float3& c, 
+								   const color& aVertexColor,
+								   const color& bVertexColor,
+								   const color& cVertexColor)
 {
 	float2 a2DCanonicalCoordinates(a.x, a.y);
 	float2 b2DCanonicalCoordinates(b.x, b.y);
@@ -22,16 +27,61 @@ void Rasterizer::rasterizeTriangle(const float3& a, const float3& b, const float
 	float2 b2DWindowCoordinates = canonicalToWindowCoordinates(b2DCanonicalCoordinates, bufferSizeX, bufferSizeY);
 	float2 c2DWindowCoordinates = canonicalToWindowCoordinates(c2DCanonicalCoordinates, bufferSizeX, bufferSizeY);
 
-	for (int y = 0; y < bufferSizeY; y++)
+	float drawingRectMinX = minFloat(a2DWindowCoordinates.x, b2DWindowCoordinates.x, c2DWindowCoordinates.x);
+	float drawingRectMaxX = maxFloat(a2DWindowCoordinates.x, b2DWindowCoordinates.x, c2DWindowCoordinates.x);
+	float drawingRectMinY = minFloat(a2DWindowCoordinates.y, b2DWindowCoordinates.y, c2DWindowCoordinates.y);
+	float drawingRectMaxY = maxFloat(a2DWindowCoordinates.y, b2DWindowCoordinates.y, c2DWindowCoordinates.y);
+
+	float clippedDrawingRectMinX = maxFloat(drawingRectMinX, 0);
+	float clippedDrawingRectMaxX = minFloat(drawingRectMaxX, bufferSizeX - 1);
+	float clippedDrawingRectMinY = maxFloat(drawingRectMinY, 0);
+	float clippedDrawingRectMaxY = minFloat(drawingRectMaxY, bufferSizeY - 1);
+
+	float differenceAxBx = a2DWindowCoordinates.x - b2DWindowCoordinates.x;
+	float differenceBxCx = b2DWindowCoordinates.x - c2DWindowCoordinates.x;
+	float differenceCxAx = c2DWindowCoordinates.x - a2DWindowCoordinates.x;
+	float differenceAyBy = a2DWindowCoordinates.y - b2DWindowCoordinates.y;
+	float differenceByCy = b2DWindowCoordinates.y - c2DWindowCoordinates.y;
+	float differenceCyAy = c2DWindowCoordinates.y - a2DWindowCoordinates.y;
+	float differenceCxBx = c2DWindowCoordinates.x - b2DWindowCoordinates.x;
+	float differenceAxCx = a2DWindowCoordinates.x - c2DWindowCoordinates.x;
+	float differenceAyCy = a2DWindowCoordinates.y - c2DWindowCoordinates.y;
+
+	for (int y = clippedDrawingRectMinY; y <= clippedDrawingRectMaxY; y++)
 	{
-		for (int x = 0; x < bufferSizeX; x++)
+		for (int x = clippedDrawingRectMinX; x <= clippedDrawingRectMaxX; x++)
 		{
-			if ((a2DWindowCoordinates.x - b2DWindowCoordinates.x) * (y - a2DWindowCoordinates.y) - (a2DWindowCoordinates.y - b2DWindowCoordinates.y) * (x - a2DWindowCoordinates.x) > 0 &&
-				(b2DWindowCoordinates.x - c2DWindowCoordinates.x) * (y - b2DWindowCoordinates.y) - (b2DWindowCoordinates.y - c2DWindowCoordinates.y) * (x - b2DWindowCoordinates.x) > 0 &&
-				(c2DWindowCoordinates.x - a2DWindowCoordinates.x) * (y - c2DWindowCoordinates.y) - (c2DWindowCoordinates.y - a2DWindowCoordinates.y) * (x - c2DWindowCoordinates.x) > 0)
+			if (differenceAxBx * (y - a2DWindowCoordinates.y) - differenceAyBy * (x - a2DWindowCoordinates.x) > 0 &&
+				differenceBxCx * (y - b2DWindowCoordinates.y) - differenceByCy * (x - b2DWindowCoordinates.x) > 0 &&
+				differenceCxAx * (y - c2DWindowCoordinates.y) - differenceCyAy * (x - c2DWindowCoordinates.x) > 0)
 			{
-				buffer->writePixel(x, y, fillColor);
+				float interpolationLambda1 = (differenceByCy * (x - c2DWindowCoordinates.x) + differenceCxBx * (y - c2DWindowCoordinates.y)) /
+											 (differenceByCy * differenceAxCx + differenceCxBx * differenceAyCy);
+				float interpolationLambda2 = (differenceCyAy * (x - c2DWindowCoordinates.x) + differenceAxCx * (y - c2DWindowCoordinates.y)) /
+											 (differenceCyAy * differenceBxCx + differenceAxCx * differenceByCy);
+				float interpolationLambda3 = 1 - interpolationLambda1 - interpolationLambda2;
+
+				color interpolatedColor = aVertexColor * interpolationLambda1 +
+										  bVertexColor * interpolationLambda2 + 
+										  cVertexColor * interpolationLambda3;
+
+				buffer->writePixel(x, y, interpolatedColor);
 			}
 		}
 	}
+
+	// NO OPTIMIZATIONS AND NO CLIPPING
+	// 
+	//for (int y = 0; y < bufferSizeY; y++)
+	//{
+	//	for (int x = 0; x < bufferSizeX; x++)
+	//	{
+	//		if ((a2DWindowCoordinates.x - b2DWindowCoordinates.x) * (y - a2DWindowCoordinates.y) - (a2DWindowCoordinates.y - b2DWindowCoordinates.y) * (x - a2DWindowCoordinates.x) > 0 &&
+	//			(b2DWindowCoordinates.x - c2DWindowCoordinates.x) * (y - b2DWindowCoordinates.y) - (b2DWindowCoordinates.y - c2DWindowCoordinates.y) * (x - b2DWindowCoordinates.x) > 0 &&
+	//			(c2DWindowCoordinates.x - a2DWindowCoordinates.x) * (y - c2DWindowCoordinates.y) - (c2DWindowCoordinates.y - a2DWindowCoordinates.y) * (x - c2DWindowCoordinates.x) > 0)
+	//		{
+	//			buffer->writePixel(x, y, fillColor);
+	//		}
+	//	}
+	//}
 }
