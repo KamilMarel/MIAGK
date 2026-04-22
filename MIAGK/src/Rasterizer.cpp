@@ -51,18 +51,50 @@ void Rasterizer::rasterizeTriangle(const float3& a,
 	{
 		for (int x = clippedDrawingRectMinX; x <= clippedDrawingRectMaxX; x++)
 		{
-			if (differenceAxBx * (y - a2DWindowCoordinates.y) - differenceAyBy * (x - a2DWindowCoordinates.x) > 0 &&
-				differenceBxCx * (y - b2DWindowCoordinates.y) - differenceByCy * (x - b2DWindowCoordinates.x) > 0 &&
-				differenceCxAx * (y - c2DWindowCoordinates.y) - differenceCyAy * (x - c2DWindowCoordinates.x) > 0)
+			bool edgeABIsTopLeft = (differenceAyBy < 0 || (differenceAyBy == 0 && differenceAxBx > 0)) ? true : false;
+			bool edgeBCIsTopLeft = (differenceByCy < 0 || (differenceByCy == 0 && differenceBxCx > 0)) ? true : false;
+			bool edgeCAIsTopLeft = (differenceCyAy < 0 || (differenceCyAy == 0 && differenceCxAx > 0)) ? true : false;
+
+			bool edgeABHalfSpaceConditionResult = false;
+			bool edgeBCHalfSpaceConditionResult = false;
+			bool edgeCAHalfSpaceConditionResult = false;
+			if (edgeABIsTopLeft)
+			{
+				edgeABHalfSpaceConditionResult = differenceAxBx * (y - a2DWindowCoordinates.y) - differenceAyBy * (x - a2DWindowCoordinates.x) >= 0;
+			}
+			else
+			{
+				edgeABHalfSpaceConditionResult = differenceAxBx * (y - a2DWindowCoordinates.y) - differenceAyBy * (x - a2DWindowCoordinates.x) > 0;
+			}
+			if (edgeBCIsTopLeft)
+			{
+				edgeBCHalfSpaceConditionResult = differenceBxCx * (y - b2DWindowCoordinates.y) - differenceByCy * (x - b2DWindowCoordinates.x) >= 0;
+			}
+			else
+			{
+				edgeBCHalfSpaceConditionResult = differenceBxCx * (y - b2DWindowCoordinates.y) - differenceByCy * (x - b2DWindowCoordinates.x) > 0;
+			}
+			if (edgeCAIsTopLeft)
+			{
+				edgeCAHalfSpaceConditionResult = differenceCxAx * (y - c2DWindowCoordinates.y) - differenceCyAy * (x - c2DWindowCoordinates.x) >= 0;
+			}
+			else
+			{
+				edgeCAHalfSpaceConditionResult = differenceCxAx * (y - c2DWindowCoordinates.y) - differenceCyAy * (x - c2DWindowCoordinates.x) > 0;
+			}
+
+			if (edgeABHalfSpaceConditionResult == true &&
+				edgeBCHalfSpaceConditionResult == true &&
+				edgeCAHalfSpaceConditionResult == true)
 			{
 				float interpolationLambda1 = (differenceByCy * (x - c2DWindowCoordinates.x) + differenceCxBx * (y - c2DWindowCoordinates.y)) /
-											 (differenceByCy * differenceAxCx + differenceCxBx * differenceAyCy);
+					(differenceByCy * differenceAxCx + differenceCxBx * differenceAyCy);
 				float interpolationLambda2 = (differenceCyAy * (x - c2DWindowCoordinates.x) + differenceAxCx * (y - c2DWindowCoordinates.y)) /
-											 (differenceCyAy * differenceBxCx + differenceAxCx * differenceByCy);
+					(differenceCyAy * differenceBxCx + differenceAxCx * differenceByCy);
 				float interpolationLambda3 = 1 - interpolationLambda1 - interpolationLambda2;
 
 				color interpolatedColor = aVertexColor * interpolationLambda1 +
-										  bVertexColor * interpolationLambda2 + 
+										  bVertexColor * interpolationLambda2 +
 										  cVertexColor * interpolationLambda3;
 
 				buffer->writePixel(x, y, interpolatedColor);
