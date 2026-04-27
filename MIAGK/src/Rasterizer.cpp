@@ -93,11 +93,19 @@ void Rasterizer::rasterizeTriangle(const float3& a,
 					(differenceCyAy * differenceBxCx + differenceAxCx * differenceByCy);
 				float interpolationLambda3 = 1 - interpolationLambda1 - interpolationLambda2;
 
-				color interpolatedColor = aVertexColor * interpolationLambda1 +
-										  bVertexColor * interpolationLambda2 +
-										  cVertexColor * interpolationLambda3;
+				float depth = interpolationLambda1 * a.z +
+							  interpolationLambda2 * b.z +
+							  interpolationLambda3 * c.z;
 
-				buffer->writePixel(x, y, interpolatedColor);
+				if (depth < buffer->getDepthAtPosition(x, y))
+				{
+					color interpolatedColor = aVertexColor * interpolationLambda1 +
+											  bVertexColor * interpolationLambda2 +
+											  cVertexColor * interpolationLambda3;
+
+					buffer->writePixel(x, y, interpolatedColor);
+					buffer->writeDepth(x, y, depth);
+				}
 			}
 		}
 	}
