@@ -133,6 +133,7 @@
     <ClCompile Include="src\Rasterizer.cpp" />
     <ClCompile Include="src\Buffer.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\VertexProcessor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Buffer.h" />
@@ -141,6 +142,7 @@
     <ClInclude Include="include\stb_image.h" />
     <ClInclude Include="include\stb_image_write.h" />
     <ClInclude Include="include\Rasterizer.h" />
+    <ClInclude Include="include\VertexProcessor.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

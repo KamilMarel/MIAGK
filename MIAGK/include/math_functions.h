@@ -1,3 +1,4 @@
+#pragma once
 #include "math_structures.h"
 
 inline float2 canonicalToWindowCoordinates(const float2& coordinatesToConvert, unsigned int windowSizeX, unsigned int windowSizeY)

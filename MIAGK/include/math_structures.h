@@ -1,4 +1,7 @@
+#pragma once
 #include <iostream>
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 struct float3
 {
@@ -143,6 +146,17 @@ struct float4
 				 y * other,
 				 z * other,
 				 w * other };
+	}
+
+	float4 operator/(const float other) const
+	{
+		return
+		{
+			x / other,
+			y / other,
+			z / other,
+			w / other
+		};
 	}
 
 	friend std::ostream& operator<<(std::ostream& os, const float4& obj)

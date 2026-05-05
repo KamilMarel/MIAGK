@@ -1,4 +1,6 @@
+#pragma once
 #include "Buffer.h"
+#include "VertexProcessor.h"
 
 class Rasterizer
 {
@@ -13,4 +15,5 @@ public:
 						   const color& cVertexColor);
 private:
 	Buffer* buffer;
+	VertexProcessor vertexProcessor;
 };

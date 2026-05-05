@@ -16,9 +16,20 @@ void Rasterizer::rasterizeTriangle(const float3& a,
 								   const color& bVertexColor,
 								   const color& cVertexColor)
 {
-	float2 a2DCanonicalCoordinates(a.x, a.y);
-	float2 b2DCanonicalCoordinates(b.x, b.y);
-	float2 c2DCanonicalCoordinates(c.x, c.y);
+	float4 a4DViewCoordinates(a.x, a.y, a.z, 1.0f);
+	float4 b4DViewCoordinates(b.x, b.y, b.z, 1.0f);
+	float4 c4DViewCoordinates(c.x, c.y, c.z, 1.0f);
+
+	float4 a4DCanonicalCoordinates = vertexProcessor.getView2ProjMatrix() * a4DViewCoordinates;
+	float4 b4DCanonicalCoordinates = vertexProcessor.getView2ProjMatrix() * b4DViewCoordinates;
+	float4 c4DCanonicalCoordinates = vertexProcessor.getView2ProjMatrix() * c4DViewCoordinates;
+	a4DCanonicalCoordinates = a4DCanonicalCoordinates / a4DCanonicalCoordinates.w;
+	b4DCanonicalCoordinates = b4DCanonicalCoordinates / b4DCanonicalCoordinates.w;
+	c4DCanonicalCoordinates = c4DCanonicalCoordinates / c4DCanonicalCoordinates.w;
+
+	float2 a2DCanonicalCoordinates(a4DCanonicalCoordinates.x, a4DCanonicalCoordinates.y);
+	float2 b2DCanonicalCoordinates(b4DCanonicalCoordinates.x, b4DCanonicalCoordinates.y);
+	float2 c2DCanonicalCoordinates(c4DCanonicalCoordinates.x, c4DCanonicalCoordinates.y);
 
 	unsigned int bufferSizeX = buffer->getSizeX();
 	unsigned int bufferSizeY = buffer->getSizeY();
