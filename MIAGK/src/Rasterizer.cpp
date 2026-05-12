@@ -16,13 +16,13 @@ void Rasterizer::rasterizeTriangle(const float3& a,
 								   const color& bVertexColor,
 								   const color& cVertexColor)
 {
-	float4 a4DViewCoordinates(a.x, a.y, a.z, 1.0f);
-	float4 b4DViewCoordinates(b.x, b.y, b.z, 1.0f);
-	float4 c4DViewCoordinates(c.x, c.y, c.z, 1.0f);
+	float4 a4DObjCoordinates(a.x, a.y, a.z, 1.0f);
+	float4 b4DObjCoordinates(b.x, b.y, b.z, 1.0f);
+	float4 c4DObjCoordinates(c.x, c.y, c.z, 1.0f);
 
-	float4 a4DCanonicalCoordinates = vertexProcessor.getView2ProjMatrix() * a4DViewCoordinates;
-	float4 b4DCanonicalCoordinates = vertexProcessor.getView2ProjMatrix() * b4DViewCoordinates;
-	float4 c4DCanonicalCoordinates = vertexProcessor.getView2ProjMatrix() * c4DViewCoordinates;
+	float4 a4DCanonicalCoordinates = vertexProcessor.getView2ProjMatrix() * vertexProcessor.getWorld2ViewMatrix() * vertexProcessor.getObj2WorldMatrix() * a4DObjCoordinates;
+	float4 b4DCanonicalCoordinates = vertexProcessor.getView2ProjMatrix() * vertexProcessor.getWorld2ViewMatrix() * vertexProcessor.getObj2WorldMatrix() * b4DObjCoordinates;
+	float4 c4DCanonicalCoordinates = vertexProcessor.getView2ProjMatrix() * vertexProcessor.getWorld2ViewMatrix() * vertexProcessor.getObj2WorldMatrix() * c4DObjCoordinates;
 	a4DCanonicalCoordinates = a4DCanonicalCoordinates / a4DCanonicalCoordinates.w;
 	b4DCanonicalCoordinates = b4DCanonicalCoordinates / b4DCanonicalCoordinates.w;
 	c4DCanonicalCoordinates = c4DCanonicalCoordinates / c4DCanonicalCoordinates.w;
