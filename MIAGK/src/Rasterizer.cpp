@@ -9,27 +9,16 @@ Rasterizer::~Rasterizer()
 {
 }
 
-void Rasterizer::rasterizeTriangle(const float3& a, 
-								   const float3& b, 
-								   const float3& c, 
+void Rasterizer::rasterizeTriangle(const float4& aCanonicalCoordinates, 
+								   const float4& bCanonicalCoordinates,
+								   const float4& cCanonicalCoordinates,
 								   const color& aVertexColor,
 								   const color& bVertexColor,
 								   const color& cVertexColor)
 {
-	float4 a4DObjCoordinates(a.x, a.y, a.z, 1.0f);
-	float4 b4DObjCoordinates(b.x, b.y, b.z, 1.0f);
-	float4 c4DObjCoordinates(c.x, c.y, c.z, 1.0f);
-
-	float4 a4DCanonicalCoordinates = vertexProcessor.getView2ProjMatrix() * vertexProcessor.getWorld2ViewMatrix() * vertexProcessor.getObj2WorldMatrix() * a4DObjCoordinates;
-	float4 b4DCanonicalCoordinates = vertexProcessor.getView2ProjMatrix() * vertexProcessor.getWorld2ViewMatrix() * vertexProcessor.getObj2WorldMatrix() * b4DObjCoordinates;
-	float4 c4DCanonicalCoordinates = vertexProcessor.getView2ProjMatrix() * vertexProcessor.getWorld2ViewMatrix() * vertexProcessor.getObj2WorldMatrix() * c4DObjCoordinates;
-	a4DCanonicalCoordinates = a4DCanonicalCoordinates / a4DCanonicalCoordinates.w;
-	b4DCanonicalCoordinates = b4DCanonicalCoordinates / b4DCanonicalCoordinates.w;
-	c4DCanonicalCoordinates = c4DCanonicalCoordinates / c4DCanonicalCoordinates.w;
-
-	float2 a2DCanonicalCoordinates(a4DCanonicalCoordinates.x, a4DCanonicalCoordinates.y);
-	float2 b2DCanonicalCoordinates(b4DCanonicalCoordinates.x, b4DCanonicalCoordinates.y);
-	float2 c2DCanonicalCoordinates(c4DCanonicalCoordinates.x, c4DCanonicalCoordinates.y);
+	float2 a2DCanonicalCoordinates(aCanonicalCoordinates.x, aCanonicalCoordinates.y);
+	float2 b2DCanonicalCoordinates(bCanonicalCoordinates.x, bCanonicalCoordinates.y);
+	float2 c2DCanonicalCoordinates(cCanonicalCoordinates.x, cCanonicalCoordinates.y);
 
 	unsigned int bufferSizeX = buffer->getSizeX();
 	unsigned int bufferSizeY = buffer->getSizeY();
@@ -104,9 +93,9 @@ void Rasterizer::rasterizeTriangle(const float3& a,
 					(differenceCyAy * differenceBxCx + differenceAxCx * differenceByCy);
 				float interpolationLambda3 = 1 - interpolationLambda1 - interpolationLambda2;
 
-				float depth = interpolationLambda1 * a.z +
-							  interpolationLambda2 * b.z +
-							  interpolationLambda3 * c.z;
+				float depth = interpolationLambda1 * aCanonicalCoordinates.z +
+							  interpolationLambda2 * bCanonicalCoordinates.z +
+							  interpolationLambda3 * cCanonicalCoordinates.z;
 
 				if (depth < buffer->getDepthAtPosition(x, y))
 				{
@@ -120,19 +109,4 @@ void Rasterizer::rasterizeTriangle(const float3& a,
 			}
 		}
 	}
-
-	// NO OPTIMIZATIONS AND NO CLIPPING
-	// 
-	//for (int y = 0; y < bufferSizeY; y++)
-	//{
-	//	for (int x = 0; x < bufferSizeX; x++)
-	//	{
-	//		if ((a2DWindowCoordinates.x - b2DWindowCoordinates.x) * (y - a2DWindowCoordinates.y) - (a2DWindowCoordinates.y - b2DWindowCoordinates.y) * (x - a2DWindowCoordinates.x) > 0 &&
-	//			(b2DWindowCoordinates.x - c2DWindowCoordinates.x) * (y - b2DWindowCoordinates.y) - (b2DWindowCoordinates.y - c2DWindowCoordinates.y) * (x - b2DWindowCoordinates.x) > 0 &&
-	//			(c2DWindowCoordinates.x - a2DWindowCoordinates.x) * (y - c2DWindowCoordinates.y) - (c2DWindowCoordinates.y - a2DWindowCoordinates.y) * (x - c2DWindowCoordinates.x) > 0)
-	//		{
-	//			buffer->writePixel(x, y, fillColor);
-	//		}
-	//	}
-	//}
 }

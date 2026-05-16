@@ -13,6 +13,7 @@ public:
 	float4x4& getView2ProjMatrix();
 	float4x4& getWorld2ViewMatrix();
 	float4x4& getObj2WorldMatrix();
+	float4 transformToCanonicalCoordinates(const float3& objectSpaceCoordinates);
 private:
 	float4x4 view2Proj;
 	float4x4 world2View;

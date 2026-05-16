@@ -130,6 +130,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\SimpleTriangle.cpp" />
+    <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\Rasterizer.cpp" />
     <ClCompile Include="src\Buffer.cpp" />
     <ClCompile Include="main.cpp" />
@@ -143,6 +145,8 @@
     <ClInclude Include="include\stb_image_write.h" />
     <ClInclude Include="include\Rasterizer.h" />
     <ClInclude Include="include\VertexProcessor.h" />
+    <ClInclude Include="include\Mesh.h" />
+    <ClInclude Include="include\SimpleTriangle.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

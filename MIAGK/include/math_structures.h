@@ -3,6 +3,25 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+struct int3
+{
+	int a, b, c;
+
+	int3()
+	{
+		a = 0;
+		b = 0;
+		c = 0;
+	}
+
+	int3(int a, int b, int c)
+	{
+		this->a = a;
+		this->b = b;
+		this->c = c;
+	}
+};
+
 struct float3
 {
 	float x, y, z;

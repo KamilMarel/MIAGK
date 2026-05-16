@@ -2,11 +2,7 @@
 
 VertexProcessor::VertexProcessor()
 {
-	setView2ProjMatrix(45.0f, 1.0f, 0.1f, 100.0f);
-	setLookAt(float3(0, 0, 0), float3(0, 0, -1), float3(0, 1, 0));
-	multByScale(float3(1.5f, 1.0f, 1.0f));
-	multByRotation(-45.0f, float3(0.0f, 1.0f, 0.0f));
-	multByTranslation(float3(0.0f, 0.0f, -5.0f));
+
 }
 
 void VertexProcessor::setView2ProjMatrix(float fovY, float aspect, float near, float far)
@@ -78,4 +74,14 @@ float4x4& VertexProcessor::getWorld2ViewMatrix()
 float4x4& VertexProcessor::getObj2WorldMatrix()
 {
 	return obj2World;
+}
+
+float4 VertexProcessor::transformToCanonicalCoordinates(const float3& objectSpaceCoordinates)
+{
+	float4 result = float4(objectSpaceCoordinates.x, objectSpaceCoordinates.y, objectSpaceCoordinates.z, 1.0f);
+
+	result = view2Proj * world2View * obj2World * result;
+	result = result / result.w;
+
+	return result;
 }
