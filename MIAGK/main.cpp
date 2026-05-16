@@ -2,7 +2,7 @@
 
 #include "Rasterizer.h"
 #include "VertexProcessor.h"
-#include "SimpleTriangle.h"
+#include "Cone.h"
 
 const unsigned int BUFFER_SIZE_X = 512, BUFFER_SIZE_Y = 512;
 const color BUFFER_CLEAR_COLOR(0, 150, 201);
@@ -14,13 +14,15 @@ int main()
 	buffer.clearDepth(1.0f);
 
 	Rasterizer rasterizer(&buffer);
-	VertexProcessor vertexProcessor;
-	vertexProcessor.setLookAt(float3(0, 0, 0), float3(0, 0, -1), float3(0, 1, 0));
-	vertexProcessor.setView2ProjMatrix(70.0f, 1.0f, 0.1f, 100.0f);
-	vertexProcessor.multByTranslation(float3(0, 0, -3));
 
-	SimpleTriangle simpleTriangle;
-	simpleTriangle.draw(rasterizer, vertexProcessor);
+	VertexProcessor coneVertexProcessor;
+	coneVertexProcessor.setLookAt(float3(0, 0, 0), float3(0, 0, -1), float3(0, 1, 0));
+	coneVertexProcessor.setView2ProjMatrix(70.0f, 1.0f, 0.1f, 100.0f);
+	coneVertexProcessor.multByRotation(30, float3(0, 0, 1));
+	coneVertexProcessor.multByRotation(60, float3(1, 0, 0));
+	coneVertexProcessor.multByTranslation(float3(-3, 3, -8));
+	Cone cone(1, 2, 5);
+	cone.draw(rasterizer, coneVertexProcessor);
 
 	buffer.saveToFile();
 }

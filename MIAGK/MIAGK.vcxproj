@@ -130,6 +130,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Cone.cpp" />
     <ClCompile Include="src\SimpleTriangle.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\Rasterizer.cpp" />
@@ -138,6 +139,7 @@
     <ClCompile Include="src\VertexProcessor.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\Cone.h" />
     <ClInclude Include="include\Buffer.h" />
     <ClInclude Include="include\math_functions.h" />
     <ClInclude Include="include\math_structures.h" />
