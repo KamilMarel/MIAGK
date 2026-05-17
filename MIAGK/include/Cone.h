@@ -5,6 +5,6 @@
 class Cone : public Mesh
 {
 public:
-	Cone(unsigned int radius, unsigned int height, unsigned int detailLevel);
+	Cone(float radius, float height, unsigned int detailLevel);
 	~Cone();
 };

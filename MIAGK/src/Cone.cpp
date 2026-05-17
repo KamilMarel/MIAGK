@@ -1,6 +1,6 @@
 #include "Cone.h"
 
-Cone::Cone(unsigned int radius, unsigned int height, unsigned int detailLevel)
+Cone::Cone(float radius, float height, unsigned int detailLevel)
 {
 	float step = (2 * M_PI) / (3 + detailLevel * 1.0f);
 
