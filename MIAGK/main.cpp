@@ -4,6 +4,7 @@
 #include "VertexProcessor.h"
 #include "Cone.h"
 #include "Cylinder.h"
+#include "Torus.h"
 
 const unsigned int BUFFER_SIZE_X = 512, BUFFER_SIZE_Y = 512;
 const color BUFFER_CLEAR_COLOR(0, 150, 201);
@@ -33,6 +34,15 @@ int main()
 	cylinderVertexProcessor.multByTranslation(float3(3, 2, -8));
 	Cylinder cylinder(1, 2, 10, 5);
 	cylinder.draw(rasterizer, cylinderVertexProcessor);
+
+	VertexProcessor torusVertexProcessor;
+	torusVertexProcessor.setLookAt(float3(0, 0, 0), float3(0, 0, -1), float3(0, 1, 0));
+	torusVertexProcessor.setView2ProjMatrix(70.0f, 1.0f, 0.1f, 100.0f);
+	torusVertexProcessor.multByRotation(30, float3(0, 0, 1));
+	torusVertexProcessor.multByRotation(60, float3(1, 0, 0));
+	torusVertexProcessor.multByTranslation(float3(-1, 0, -8));
+	Torus torus(2, 0.5f, 10, 5);
+	torus.draw(rasterizer, torusVertexProcessor);
 
 	buffer.saveToFile();
 }
